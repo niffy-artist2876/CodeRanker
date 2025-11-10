@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap");
+
+:root {
+    font-family: "Rubik", system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    /* colors and backgrounds are provided by ui.css design tokens */
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(
+        --font-sans,
+        "Rubik",
+        system-ui,
+        Avenir,
+        Helvetica,
+        Arial,
+        sans-serif
+    );
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* allow full-viewport components to expand correctly */
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+}

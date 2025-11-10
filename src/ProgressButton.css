@@ -1,0 +1,77 @@
+.progress-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.6rem 0.9rem;
+  min-width: 110px;
+  height: 44px;
+  background: linear-gradient(90deg,#60a5fa,#3b82f6);
+  color: #06243a;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  box-shadow: 0 6px 18px rgba(59,130,246,0.14);
+  width: 100%;
+  justify-content: center;
+}
+
+.progress-btn.floating {
+  position: fixed;
+  left: 40%;
+  right: 40%;
+  top: 50%;
+  width: 400px;
+  height: 275px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  z-index: 1000;
+}
+
+
+.progress-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  margin: 0;
+}
+
+.progress-btn span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: inherit;
+}
+
+
+/* Dark mode support */
+/*
+@media (prefers-color-scheme: dark) {
+  .progress-btn {
+    background: var(--color-surface, #262828);
+    border-color: rgba(119, 124, 124, 0.3);
+  }
+  
+  .progress-icon {
+    stroke: var(--color-text, #f5f5f5);
+  }
+  
+  .progress-btn span {
+    color: var(--color-text, #f5f5f5);
+  }
+}*/
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .progress-btn { padding: 0.5rem 0.7rem; min-width: 90px; height: 40px; }
+  .progress-icon { width: 18px; height: 18px; }
+  .progress-btn span { font-size: 0.8rem; }
+  .progress-btn.floating { display: none; }
+}
