@@ -8,14 +8,12 @@ import {
 
 const router = Router();
 
-// Overview progress across platforms for the authenticated user
 router.get(
   "/overview",
   asyncHandler(requireAuth),
   asyncHandler(getProgressOverviewHandler),
 );
 
-// Platform-specific progress: 'leetcode' | 'codeforces'
 router.get(
   "/:platform",
   asyncHandler(requireAuth),

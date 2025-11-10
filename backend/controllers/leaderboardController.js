@@ -2,37 +2,13 @@ import ExternalAccount from "../models/ExternalAccount.js";
 import { getLeetCodeStats } from "../services/leetcodeService.js";
 import { getCodeforcesStats } from "../services/codeforcesService.js";
 
-/**
- * Leaderboard controller
- *
- * Computes a combined score per participant using:
- * - LeetCode: total solved
- * - Codeforces: rating adjusted by a baseline (default 800)
- *
- * Combined score formula:
- *   score = LC_WEIGHT * (leetcode.totalSolved) + CF_WEIGHT * max(codeforces.rating - CF_BASELINE, 0)
- *
- * Env configuration (optional):
- *   - CF_BASELINE: number (default: 800)
- *   - LC_WEIGHT: number (default: 1)
- *   - CF_WEIGHT: number (default: 1)
- *   - LEADERBOARD_CONCURRENCY: number (default: 8)
- */
-
 const CF_BASELINE = Number(globalThis.process?.env?.CF_BASELINE ?? 800) || 800;
 const LC_WEIGHT = Number(globalThis.process?.env?.LC_WEIGHT ?? 1) || 1;
 const CF_WEIGHT = Number(globalThis.process?.env?.CF_WEIGHT ?? 1) || 1;
 const CONCURRENCY =
   Number(globalThis.process?.env?.LEADERBOARD_CONCURRENCY ?? 8) || 8;
 
-/**
- * Simple concurrency-limited mapper (p-map style).
- * @template T,U
- * @param {T[]} input
- * @param {(item: T, index: number) => Promise<U>} mapper
- * @param {number} concurrency
- * @returns {Promise<U[]>}
- */
+
 async function pMap(input, mapper, concurrency = 8) {
   const results = new Array(input.length);
   let nextIndex = 0;
@@ -58,7 +34,6 @@ async function pMap(input, mapper, concurrency = 8) {
             }
           })
           .catch((err) => {
-            // Fail-fast: reject on first error
             reject(err);
           });
       }
@@ -70,9 +45,7 @@ async function pMap(input, mapper, concurrency = 8) {
   });
 }
 
-/**
- * Parse a positive integer from query with clamping.
- */
+
 function parseIntParam(v, def, min, max) {
   const n = Number.parseInt(String(v ?? ""), 10);
   if (Number.isFinite(n)) {
@@ -81,18 +54,12 @@ function parseIntParam(v, def, min, max) {
   return def;
 }
 
-/**
- * Compute combined score based on LC solved and CF rating.
- */
 function computeCombinedScore({ lcSolved = 0, cfRating = 0 }) {
   const lc = Math.max(0, Number(lcSolved) || 0);
   const cfAdj = Math.max(0, (Number(cfRating) || 0) - CF_BASELINE);
   return LC_WEIGHT * lc + CF_WEIGHT * cfAdj;
 }
 
-/**
- * Build a single participant leaderboard entry.
- */
 function buildEntry({
   email,
   leetcodeUsername,
@@ -101,7 +68,7 @@ function buildEntry({
   cfStats,
   lcError,
   cfError,
-  displayName, // PESUAuth display name if available
+  displayName, 
 }) {
   const lcSolved = Math.max(0, Number(lcStats?.totalSolved || 0));
   const cfRating = typeof cfStats?.rating === "number" ? cfStats.rating : 0;
@@ -116,11 +83,9 @@ function buildEntry({
   return {
     email: email || null,
 
-    // Explicit display name (preferred by frontend if available)
 
     displayName: publicName,
 
-    // Preserve original handles; frontend will prefer displayName for rendering
     leetcodeUsername: leetcodeUsername || null,
     codeforcesHandle: codeforcesHandle || null,
 
@@ -168,10 +133,6 @@ function buildEntry({
   };
 }
 
-/**
- * Assign dense ranks to sorted entries (descending by score, then tiebreakers).
- * Dense ranking: 1,2,2,3,4...
- */
 function assignDenseRanks(sortedEntries) {
   let lastScore = null;
   let lastRank = 0;
@@ -186,37 +147,9 @@ function assignDenseRanks(sortedEntries) {
   return sortedEntries;
 }
 
-/**
- * GET /api/leaderboard
- *
- * Query params:
- * - limit?: number (1..500, default 100)
- * - offset?: number (0..5000, default 0) — applied after sorting
- *
- * Response:
- * {
- *   ok: true,
- *   updatedAt: string,
- *   totalParticipants: number,     // connected accounts considered (by ExternalAccount)
- *   count: number,                 // number of entries returned
- *   limit: number,
- *   offset: number,
- *   leaderboard: Array<{
- *     rank: number,
- *     score: number,
- *     components: { lcSolved, cfRating, cfAdjRating, lcWeight, cfWeight, cfBaseline },
- *     email: string|null,
- *     leetcodeUsername: string|null,
- *     codeforcesHandle: string|null,
- *     leetcode: { connected, exists, username, totalSolved, easy, medium, hard, error? },
- *     codeforces: { connected, exists, handle, rank, rating, maxRank, maxRating, error? }
- *   }>
- * }
- */
 export async function getLeaderboardHandler(req, res) {
   const started = Date.now();
 
-  // Pull candidates from the mapping collection (any connected)
   const candidates = await ExternalAccount.find({
     $or: [{ leetcodeConnected: true }, { codeforcesConnected: true }],
   })
@@ -226,9 +159,7 @@ export async function getLeaderboardHandler(req, res) {
   const limit = parseIntParam(req?.query?.limit, 100, 1, 500);
   const offset = parseIntParam(req?.query?.offset, 0, 0, 5000);
 
-  // Build a name map from PESUAuth tokens for all candidate emails
 
-  // For each candidate, fetch stats concurrently with bounded concurrency
   const rows = await pMap(
     candidates,
     async (acct) => {
@@ -241,7 +172,6 @@ export async function getLeaderboardHandler(req, res) {
       let lcError = undefined;
       let cfError = undefined;
 
-      // Fetch both if present, independently
       await Promise.allSettled([
         (async () => {
           if (!leetcodeUsername) return;
@@ -283,7 +213,6 @@ export async function getLeaderboardHandler(req, res) {
     CONCURRENCY,
   );
 
-  // Sort by score desc; tiebreaker: higher CF rating, then higher LC solved, then handle/name
   rows.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
     const br = (b.components?.cfRating ?? 0) - (a.components?.cfRating ?? 0);
@@ -308,7 +237,6 @@ export async function getLeaderboardHandler(req, res) {
     return 0;
   });
 
-  // Assign ranks (dense) then apply pagination
   assignDenseRanks(rows);
   const sliced = rows.slice(offset, offset + limit);
 
@@ -329,15 +257,6 @@ export async function getLeaderboardHandler(req, res) {
   });
 }
 
-/**
- * GET /api/leaderboard/me
- *
- * Convenience handler: returns the current user's leaderboard entry and rank,
- * if present, along with surrounding context (top N optional).
- *
- * Query params:
- * - window?: number (how many entries above/below to include, default 3, max 10)
- */
 export async function getMyRankHandler(req, res) {
   const email = req?.user?.profile?.email
     ? String(req.user.profile.email).trim().toLowerCase()
@@ -349,16 +268,14 @@ export async function getMyRankHandler(req, res) {
       .json({ ok: false, message: "Email not available in profile" });
   }
 
-  // Pull candidates with the same logic as getLeaderboardHandler
   const candidates = await ExternalAccount.find({
     $or: [{ leetcodeConnected: true }, { codeforcesConnected: true }],
   })
     .lean()
     .exec();
 
-  // Build name map for candidates
 
-  // Build full rows (we don't paginate here to locate exact rank)
+
   const rows = await pMap(
     candidates,
     async (acct) => {

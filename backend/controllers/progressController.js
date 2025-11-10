@@ -2,12 +2,6 @@ import ExternalAccount from "../models/ExternalAccount.js";
 import { getLeetCodeStats } from "../services/leetcodeService.js";
 import { getCodeforcesStats } from "../services/codeforcesService.js";
 
-/**
- * Resolve linked external handles strictly via PESU profile email using ExternalAccount mapping.
- *
- * @param {import("express").Request} req
- * @returns {Promise<{ email: string|null, leetcodeUsername: string|null, codeforcesHandle: string|null }>}
- */
 async function resolveLinkedHandles(req) {
   const email = req?.user?.profile?.email
     ? String(req.user.profile.email).trim().toLowerCase()
@@ -25,16 +19,11 @@ async function resolveLinkedHandles(req) {
       codeforcesHandle: ext?.codeforcesHandle || null,
     };
   } catch {
-    // Fail soft if DB is unavailable
     return { email, leetcodeUsername: null, codeforcesHandle: null };
   }
 }
 
-/**
- * Produce a normalized LeetCode progress response from stats or defaults.
- * @param {string|null} username
- * @param {any} stats
- */
+
 function buildLeetCodeResponse(username, stats, error = undefined) {
   if (!username) {
     return {
@@ -73,11 +62,7 @@ function buildLeetCodeResponse(username, stats, error = undefined) {
   };
 }
 
-/**
- * Produce a normalized Codeforces progress response from stats or defaults.
- * @param {string|null} handle
- * @param {any} stats
- */
+
 function buildCodeforcesResponse(handle, stats, error = undefined) {
   if (!handle) {
     return {
@@ -116,34 +101,11 @@ function buildCodeforcesResponse(handle, stats, error = undefined) {
   };
 }
 
-/**
- * GET /api/progress/overview
- *
- * Return a combined progress overview for the logged-in user across LeetCode and Codeforces.
- * This is a lightweight wrapper around the integration stats, shaped specifically for a "progress" page.
- *
- * Response example:
- * {
- *   ok: true,
- *   leetcode: { connected, exists, username, totalSolved, easy, medium, hard, error? },
- *   codeforces: { connected, exists, handle, rank, rating, maxRank, maxRating, error? },
- *   summary: {
- *     anyConnected: boolean,
- *     totalSolved: number|null,
- *     currentRating: number|null
- *   }
- * }
- *
- * Note: Requires upstream auth middleware to populate req.user.
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
+
 export async function getProgressOverviewHandler(req, res) {
   const { leetcodeUsername, codeforcesHandle } =
     await resolveLinkedHandles(req);
 
-  // If neither is connected, return early
   if (!leetcodeUsername && !codeforcesHandle) {
     return res.json({
       ok: true,
@@ -157,7 +119,6 @@ export async function getProgressOverviewHandler(req, res) {
     });
   }
 
-  // Fetch both concurrently when available
   const [lcResult, cfResult] = await Promise.all([
     (async () => {
       if (!leetcodeUsername) return buildLeetCodeResponse(null, null);
@@ -201,7 +162,6 @@ export async function getProgressOverviewHandler(req, res) {
     })(),
   ]);
 
-  // Build a light summary for quick display
   const summary = {
     anyConnected: Boolean(lcResult.connected || cfResult.connected),
     totalSolved:
@@ -220,15 +180,7 @@ export async function getProgressOverviewHandler(req, res) {
   });
 }
 
-/**
- * GET /api/progress/:platform
- * Platform is one of: "leetcode" | "codeforces"
- *
- * Returns platform-specific progress only.
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
+
 export async function getPlatformProgressHandler(req, res) {
   const platform = String(req.params.platform || "").toLowerCase();
   const { leetcodeUsername, codeforcesHandle } =
@@ -276,7 +228,6 @@ export async function getPlatformProgressHandler(req, res) {
     }
   }
 
-  // platform === "codeforces"
   if (!codeforcesHandle) {
     return res.json({
       ok: true,

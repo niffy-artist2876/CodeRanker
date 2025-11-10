@@ -16,12 +16,10 @@ dotenv.config();
 
 const app = express();
 
-// Initialize DB connection
 connectDB().catch((err) => {
   console.error("Failed to connect to MongoDB:", err);
 });
 
-// Middleware
 app.use(
   cors({
     origin: true,
@@ -29,17 +27,14 @@ app.use(
   }),
 );
 
-// Set JSON and URL-encoded body size limits
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 app.use(cookieParser());
 
-// Health endpoint
 app.get("/api/health", (req, res) => {
   return res.json({ status: true, message: "ok" });
 });
 
-// Routes
 
 app.use("/api/auth", authRoutes);
 

@@ -1,18 +1,5 @@
-/*
-  ui.css — Minimal, cozy design tokens and utilities
 
-  Drop-in stylesheet that defines:
-  - Color + spacing tokens
-  - Basic element reset
-  - Simple utility classes (layout, spacing, text)
-  - Lightweight components (buttons, inputs, cards, badges)
-
-  Designed to feel calm, clean, and focused.
-*/
-
-/* Design tokens */
 :root {
-    /* Typography */
     --font-sans:
         "Rubik", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
         "Apple Color Emoji", "Segoe UI Emoji";
@@ -22,13 +9,11 @@
     --font-size-lg: 18px;
     --font-size-xl: 22px;
 
-    /* Radii */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-full: 999px;
 
-    /* Spacing scale (cozy) */
     --space-0: 0;
     --space-1: 4px;
     --space-2: 8px;
@@ -38,23 +23,22 @@
     --space-6: 24px;
     --space-8: 32px;
 
-    /* Colors (light) */
-    --bg: #f6f8fc; /* soft off-white with a hint of blue */
-    --surface: #ffffff; /* elevated surfaces */
-    --surface-2: #f1f4fa; /* subtle surface for sections */
-    --text: #172135; /* cozy ink */
-    --muted: #6b7a92; /* muted text */
-    --border: #d7deea; /* subtle borders */
-    --accent: #4f7df3; /* primary accent */
-    --accent-contrast: #0b234f; /* contrast for accent text */
+    --bg: #f6f8fc; 
+    --surface: #ffffff; 
+    --surface-2: #f1f4fa; 
+    --text: #172135; 
+    --muted: #6b7a92; 
+    --border: #d7deea; 
+    --accent: #4f7df3; 
+    --accent-contrast: #0b234f; 
     --success: #14b8a6;
     --danger: #ef4444;
 
-    /* Shadows */
+
     --shadow-sm: 0 6px 20px rgba(17, 24, 39, 0.06);
     --shadow: 0 12px 40px rgba(17, 24, 39, 0.1);
 
-    /* Focus ring */
+
     --ring: 0 0 0 3px rgba(79, 125, 243, 0.25);
 }
 
@@ -74,7 +58,7 @@
     }
 }
 
-/* Base reset */
+
 *,
 *::before,
 *::after {
@@ -103,7 +87,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Natural elements */
 img,
 svg,
 video,
@@ -132,7 +115,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Utilities — Layout */
 .container {
     width: min(100%, 1080px);
     margin-inline: auto;
@@ -173,7 +155,6 @@ a:hover {
   .grid-cols-2, .grid-cols-3 { grid-template-columns: 1fr; }
 }
 
-/* Utilities — Spacing (small curated set) */
 .mt-0 {
     margin-top: var(--space-0);
 }
@@ -226,7 +207,6 @@ a:hover {
     padding-block: var(--space-3);
 }
 
-/* Utilities — Text */
 .text-xs {
     font-size: var(--font-size-xs);
 }
@@ -250,7 +230,6 @@ a:hover {
     color: var(--muted);
 }
 
-/* Utilities — Shape & Effects */
 .rounded {
     border-radius: var(--radius-sm);
 }
@@ -292,7 +271,6 @@ a:hover {
         opacity 0.18s ease;
 }
 
-/* Components — Card */
 .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -301,7 +279,6 @@ a:hover {
     box-shadow: var(--shadow-sm);
 }
 
-/* Components — Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -371,7 +348,6 @@ a:hover {
     color: white;
 }
 
-/* Components — Inputs */
 .input,
 .select,
 .textarea {
@@ -419,7 +395,6 @@ a:hover {
     resize: vertical;
 }
 
-/* Components — Badge */
 .badge {
     display: inline-flex;
     align-items: center;
@@ -440,7 +415,6 @@ a:hover {
     border-color: color-mix(in srgb, var(--danger), transparent 75%);
 }
 
-/* Components — Pill (neutral) */
 .pill {
     display: inline-block;
     padding: 6px 12px;
@@ -451,7 +425,6 @@ a:hover {
     font-size: var(--font-size-sm);
 }
 
-/* Small helpers */
 .hr {
     height: 1px;
     background: var(--border);
@@ -470,7 +443,6 @@ a:hover {
     color: var(--text);
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .transition-base,
     .btn,

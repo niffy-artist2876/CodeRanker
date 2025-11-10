@@ -1,10 +1,5 @@
 import mongoose from "mongoose";
 
-/**
- * ExternalAccount model
- * - Stores external platform handles keyed by a user's PESU profile email.
- * - Designed to be looked up strictly by email (unique).
- */
 const externalAccountSchema = new mongoose.Schema(
   {
     email: {
@@ -16,7 +11,6 @@ const externalAccountSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // External platform identifiers (nullable)
     leetcodeUsername: {
       type: String,
       default: null,
@@ -31,14 +25,12 @@ const externalAccountSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // PESU Auth display name (cached for quick leaderboard display)
     displayName: {
       type: String,
       default: null,
       trim: true,
     },
 
-    // Convenience flags indicating whether a handle is connected
 
     leetcodeConnected: {
       type: Boolean,
@@ -56,9 +48,6 @@ const externalAccountSchema = new mongoose.Schema(
   },
 );
 
-/**
- * Instance method: refresh connected flags based on current handle values.
- */
 externalAccountSchema.methods.refreshConnectedFlags =
   function refreshConnectedFlags() {
     const lc =
@@ -70,7 +59,6 @@ externalAccountSchema.methods.refreshConnectedFlags =
         ? this.codeforcesHandle.trim()
         : null;
 
-    // Normalize empty strings to null for consistency
     this.leetcodeUsername = lc || null;
     this.codeforcesHandle = cf || null;
 
@@ -78,9 +66,7 @@ externalAccountSchema.methods.refreshConnectedFlags =
     this.codeforcesConnected = Boolean(this.codeforcesHandle);
   };
 
-/**
- * Pre-save: Ensure flags are always consistent.
- */
+
 externalAccountSchema.pre("save", function preSave(next) {
   try {
     this.refreshConnectedFlags();
@@ -90,17 +76,12 @@ externalAccountSchema.pre("save", function preSave(next) {
   }
 });
 
-/**
- * Static helper: Normalize/defensively lower-case-trim an email.
- */
+
 externalAccountSchema.statics.normalizeEmail = function normalizeEmail(email) {
   return (email || "").toString().trim().toLowerCase();
 };
 
-/**
- * Static helper: Upsert (create if not exists) a document by email.
- * Returns the existing or newly created document.
- */
+
 externalAccountSchema.statics.upsertByEmail = async function upsertByEmail({
   email,
   leetcodeUsername = undefined,
@@ -111,7 +92,6 @@ externalAccountSchema.statics.upsertByEmail = async function upsertByEmail({
     throw new Error("Email is required");
   }
 
-  // Build an update that sets values only when provided
   const update = {
     $setOnInsert: { email: normalized },
   };
@@ -129,9 +109,7 @@ externalAccountSchema.statics.upsertByEmail = async function upsertByEmail({
     setDefaultsOnInsert: true,
   }).exec();
 
-  // Ensure flags are correct even after findOneAndUpdate (no save hook fired)
   doc.refreshConnectedFlags();
-  // Only save if the flags changed or normalization modified fields
   if (
     doc.isModified("leetcodeUsername") ||
     doc.isModified("codeforcesHandle") ||

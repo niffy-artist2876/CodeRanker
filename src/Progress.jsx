@@ -133,7 +133,6 @@ function LinkForm({
 
     setSubmitting(true);
     try {
-      // Verify non-empty ones
       if (lc) {
         const res = await apiVerifyLeetCodeUsername(lc);
         if (!res?.exists) {
@@ -155,7 +154,6 @@ function LinkForm({
         }
       }
 
-      // Save mapping (empty string => unlink on backend)
       const payload = {
         ...(lc !== undefined ? { leetcodeUsername: lc } : {}),
         ...(cf !== undefined ? { codeforcesHandle: cf } : {}),
@@ -413,7 +411,6 @@ function Progress() {
         codeforcesConnected: !!acct?.codeforcesConnected,
       });
 
-      // If none connected, show link form; else fetch progress
       if (!acct?.leetcodeConnected && !acct?.codeforcesConnected) {
         setShowEditor(true);
         setOverview(null);
@@ -456,7 +453,6 @@ function Progress() {
     setSaving(true);
     setError("");
     try {
-      // Update local linked state
       const updated = {
         leetcodeUsername: leetcodeUsername || null,
         codeforcesHandle: codeforcesHandle || null,
@@ -465,7 +461,6 @@ function Progress() {
       };
       setLinked(updated);
 
-      // Fetch status
       await refreshOverview();
       setShowEditor(false);
     } catch (err) {
@@ -482,7 +477,6 @@ function Progress() {
   }
 
   function onCancelEdit() {
-    // If nothing linked at all, keep editor visible
     if (!linked.leetcodeConnected && !linked.codeforcesConnected) return;
     setShowEditor(false);
   }
@@ -505,7 +499,6 @@ function Progress() {
 
         {error ? <ErrorBanner message={error} /> : null}
 
-        {/* Link form if nothing linked or editing */}
         {showEditor ? (
           <LinkForm
             initialLeetCode={linked.leetcodeUsername || ""}
@@ -515,7 +508,6 @@ function Progress() {
           />
         ) : null}
 
-        {/* Progress view */}
         {!showEditor ? (
           <>
             <div

@@ -23,7 +23,6 @@ function Dashboard() {
 
   const profile = me?.user?.profile || {};
 
-  // minimal UI — using utility classes from ui.css
 
   async function onLogout() {
     await apiLogout();

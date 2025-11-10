@@ -76,7 +76,6 @@ function HomePage(){
         cursor: 'pointer'
     };
 
-    // subtle floating animation for the blob
     const blob = {
         position: 'absolute',
         right: '-10%',

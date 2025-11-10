@@ -2,13 +2,7 @@ import { getLeetCodeStats } from "../services/leetcodeService.js";
 import { getCodeforcesStats } from "../services/codeforcesService.js";
 import ExternalAccount from "../models/ExternalAccount.js";
 
-/**
- * Resolve linked external handles strictly via PESU profile email using ExternalAccount mapping.
- * If the PESU email is not available or no mapping exists, returns null handles.
- *
- * @param {import("express").Request} req
- * @returns {Promise<{ leetcodeUsername: string|null, codeforcesHandle: string|null }>}
- */
+
 async function resolveLinkedHandles(req) {
   const email = req?.user?.profile?.email
     ? String(req.user.profile.email).trim().toLowerCase()
@@ -25,31 +19,11 @@ async function resolveLinkedHandles(req) {
       codeforcesHandle: ext?.codeforcesHandle || null,
     };
   } catch {
-    // Fail soft: if DB unavailable, treat as not linked
     return { leetcodeUsername: null, codeforcesHandle: null };
   }
 }
 
-/**
- * GET handler to fetch LeetCode solved stats for the connected account (if any).
- * Response:
- *  {
- *    ok: true,
- *    leetcode: {
- *      connected: boolean,
- *      exists: boolean|null,   // null if not connected
- *      username: string|null,
- *      totalSolved: number|null,
- *      easy: number|null,
- *      medium: number|null,
- *      hard: number|null,
- *      error?: string
- *    }
- *  }
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
+
 export async function getLeetCodeStatsHandler(req, res) {
   const { leetcodeUsername } = await resolveLinkedHandles(req);
 
@@ -71,7 +45,6 @@ export async function getLeetCodeStatsHandler(req, res) {
   try {
     const stats = await getLeetCodeStats(leetcodeUsername);
     if (!stats) {
-      // User not found on LeetCode
       return res.json({
         ok: true,
         leetcode: {
@@ -116,26 +89,7 @@ export async function getLeetCodeStatsHandler(req, res) {
   }
 }
 
-/**
- * GET handler to fetch Codeforces rank/rating for the connected account (if any).
- * Response:
- *  {
- *    ok: true,
- *    codeforces: {
- *      connected: boolean,
- *      exists: boolean|null, // null if not connected
- *      handle: string|null,
- *      rank: string|null,
- *      rating: number|null,
- *      maxRank: string|null,
- *      maxRating: number|null,
- *      error?: string
- *    }
- *  }
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
+
 export async function getCodeforcesStatsHandler(req, res) {
   const { codeforcesHandle } = await resolveLinkedHandles(req);
 
@@ -157,7 +111,6 @@ export async function getCodeforcesStatsHandler(req, res) {
   try {
     const stats = await getCodeforcesStats(codeforcesHandle);
     if (!stats) {
-      // Handle not found on Codeforces
       return res.json({
         ok: true,
         codeforces: {
@@ -202,25 +155,11 @@ export async function getCodeforcesStatsHandler(req, res) {
   }
 }
 
-/**
- * GET handler to fetch both LeetCode and Codeforces integrations in one request.
- * Response:
- *  {
- *    ok: true,
- *    leetcode: { ... same as getLeetCodeStatsHandler ... },
- *    codeforces: { ... same as getCodeforcesStatsHandler ... }
- *  }
- *
- * Note: Each integration is fetched independently; one failing will not block the other.
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
+
 export async function getIntegrationStatsHandler(req, res) {
   const { leetcodeUsername, codeforcesHandle } =
     await resolveLinkedHandles(req);
 
-  // Prepare default responses
   const lcDefault = {
     connected: Boolean(leetcodeUsername),
     exists: leetcodeUsername ? null : null,
@@ -241,7 +180,6 @@ export async function getIntegrationStatsHandler(req, res) {
     maxRating: null,
   };
 
-  // If neither connected, return early
   if (!leetcodeUsername && !codeforcesHandle) {
     return res.json({
       ok: true,
@@ -250,7 +188,6 @@ export async function getIntegrationStatsHandler(req, res) {
     });
   }
 
-  // Fetch both concurrently (when available)
   const promises = [
     (async () => {
       if (!leetcodeUsername) return { ...lcDefault, connected: false };
@@ -317,9 +254,6 @@ export async function getIntegrationStatsHandler(req, res) {
   });
 }
 
-/**
- * GET handler: return linked accounts (email-based) for the current user.
- */
 export async function getLinkedAccountsHandler(req, res) {
   const email = req?.user?.profile?.email
     ? String(req.user.profile.email).trim().toLowerCase()
@@ -362,10 +296,7 @@ export async function getLinkedAccountsHandler(req, res) {
   }
 }
 
-/**
- * PUT handler: upsert linked accounts (email-based) for the current user.
- * Accepts body { leetcodeUsername?, codeforcesHandle? }.
- */
+
 export async function upsertLinkedAccountsHandler(req, res) {
   const email = req?.user?.profile?.email
     ? String(req.user.profile.email).trim().toLowerCase()
@@ -380,12 +311,10 @@ export async function upsertLinkedAccountsHandler(req, res) {
   const { leetcodeUsername, codeforcesHandle } = req.body || {};
 
   try {
-    // Ensure a document exists (create on first update)
     let doc =
       (await ExternalAccount.findOne({ email })) ||
       (await ExternalAccount.upsertByEmail({ email }));
 
-    // Update handles; allow clearing by sending empty string/null
     if (
       Object.prototype.hasOwnProperty.call(req.body || {}, "leetcodeUsername")
     ) {

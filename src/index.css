@@ -5,7 +5,6 @@
     line-height: 1.5;
     font-weight: 400;
 
-    /* colors and backgrounds are provided by ui.css design tokens */
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -27,7 +26,6 @@ body {
     color: var(--text);
 }
 
-/* allow full-viewport components to expand correctly */
 html,
 body,
 #root {

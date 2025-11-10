@@ -1,9 +1,4 @@
-/* Progress.css — minimal, cozy styles aligned with ui.css
-   - No heavy gradients or glass effects
-   - Uses ui.css design tokens for colors, radii, and spacing
-*/
 
-/* Platform card */
 .platform-card {
     background: var(--surface);
     color: var(--text);
@@ -13,7 +8,6 @@
     box-shadow: var(--shadow-sm);
 }
 
-/* Header with title + right-aligned summary (e.g., solved/rating) */
 .platform-header {
     display: flex;
     align-items: center;
@@ -25,7 +19,6 @@
     font-weight: 600;
 }
 
-/* Summary chip on the right (similar to a badge) */
 .solved-count {
     display: inline-flex;
     align-items: center;
@@ -38,7 +31,6 @@
     border: 1px solid color-mix(in srgb, var(--accent), transparent 75%);
 }
 
-/* Difficulty bars */
 .difficulty-bars {
     margin-bottom: var(--space-4);
 }
@@ -65,7 +57,6 @@
     transition: width 0.25s ease;
 }
 
-/* Difficulty colors (lean palette) */
 .bar.easy {
     background: var(--success);
 }
@@ -76,7 +67,6 @@
     background: var(--danger);
 }
 
-/* Codeforces rating panel */
 .platform-rating {
     background: var(--surface-2);
     border: 1px solid var(--border);
@@ -90,7 +80,6 @@
     font-weight: 600;
 }
 
-/* Charts and overview card */
 .progress-charts {
     margin-top: var(--space-4);
 }
@@ -107,7 +96,6 @@
     font-weight: 600;
 }
 
-/* Light responsive tweak if platform cards grid is used */
 @media (max-width: 768px) {
     .platform-card {
         padding: var(--space-3);

@@ -1,19 +1,3 @@
-/**
- * Frontend API helpers for integration (LeetCode/Codeforces) and progress endpoints.
- *
- * All requests include credentials for cookie-based sessions.
- *
- * Exports:
- *  - apiGetLinkedAccounts()
- *  - apiUpsertLinkedAccounts({ leetcodeUsername?, codeforcesHandle? })
- *  - apiVerifyLeetCodeUsername(username)
- *  - apiVerifyCodeforcesHandle(handle)
- *  - apiGetLeetCodeStats()
- *  - apiGetCodeforcesStats()
- *  - apiGetIntegrationStats()
- *  - apiGetProgressOverview()
- *  - apiGetPlatformProgress(platform) // 'leetcode' | 'codeforces'
- */
 
 async function safeJson(res) {
   try {
@@ -46,18 +30,15 @@ async function http(method, url, body) {
   return data;
 }
 
-/* Integration: linked handles */
 
 export async function apiGetLinkedAccounts() {
   return http("GET", "/api/integration/linked");
 }
 
 export async function apiUpsertLinkedAccounts(payload = {}) {
-  // payload: { leetcodeUsername?, codeforcesHandle? }
   return http("PUT", "/api/integration/linked", payload);
 }
 
-/* Integration: verification */
 
 export async function apiVerifyLeetCodeUsername(username) {
   const u = encodeURIComponent(String(username || "").trim());
@@ -69,7 +50,6 @@ export async function apiVerifyCodeforcesHandle(handle) {
   return http("GET", `/api/integration/verify/codeforces/${h}`);
 }
 
-/* Integration: stats */
 
 export async function apiGetLeetCodeStats() {
   return http("GET", "/api/integration/stats/leetcode");
@@ -82,10 +62,6 @@ export async function apiGetCodeforcesStats() {
 export async function apiGetIntegrationStats() {
   return http("GET", "/api/integration/stats");
 }
-
-/* Progress: overview and platform-specific
-   If dedicated /api/progress endpoints are unavailable, fallback to integration stats.
-*/
 
 function adaptIntegrationToProgress(data) {
   const leetcode = data?.leetcode ?? {
@@ -122,10 +98,8 @@ function adaptIntegrationToProgress(data) {
 
 export async function apiGetProgressOverview() {
   try {
-    // Preferred endpoint (if available on backend)
     return await http("GET", "/api/progress/overview");
   } catch (err) {
-    // Fallback to integration stats and adapt shape
     if (err?.status === 404) {
       const data = await apiGetIntegrationStats();
       return adaptIntegrationToProgress(data);
@@ -141,11 +115,9 @@ export async function apiGetPlatformProgress(platform) {
   }
 
   try {
-    // Preferred endpoint (if available on backend)
     return await http("GET", `/api/progress/${p}`);
   } catch (err) {
     if (err?.status === 404) {
-      // Fallback to integration platform stats
       if (p === "leetcode") {
         const data = await apiGetLeetCodeStats();
         return { ok: true, leetcode: data?.leetcode ?? data };

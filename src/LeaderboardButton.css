@@ -1,5 +1,4 @@
 .leaderboard-btn {
-  /* default: compact, inline button suitable for toolbars/cards */
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -17,7 +16,6 @@
   justify-content: center;
 }
 
-/* legacy floating/hero style (previous behavior) */
 .leaderboard-btn.floating {
   position: fixed;
   left: 20px;
@@ -49,26 +47,9 @@
   color: inherit;
 }
 
-/* Dark mode support */
-/*@media (prefers-color-scheme: dark) {
-  .leaderboard-btn {
-    background: var(--color-surface, #262828);
-    border-color: rgba(119, 124, 124, 0.3);
-  }
-  
-  .trophy-icon {
-    stroke: var(--color-text, #f5f5f5);
-  }
-  
-  .leaderboard-btn span {
-    color: var(--color-text, #f5f5f5);
-  }
-}*/
-
-/* Responsive design */
 @media (max-width: 768px) {
   .leaderboard-btn { padding: 0.5rem 0.7rem; min-width: 90px; height: 40px; }
   .trophy-icon { width: 18px; height: 18px; }
   .leaderboard-btn span { font-size: 0.8rem; }
-  .leaderboard-btn.floating { display: none; } /* hide large floating panels on small screens */
+  .leaderboard-btn.floating { display: none; } 
 }

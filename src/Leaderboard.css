@@ -6,7 +6,6 @@
 }
 
 .leaderboard-page {
-    /* match Dashboard container: full viewport, deep layered background */
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -38,7 +37,6 @@
 }
 
 .leaderboard-card {
-    /* glass card aligned with Dashboard */
     width: 100%;
     max-width: 1100px;
     backdrop-filter: blur(10px) saturate(120%);
@@ -196,7 +194,6 @@
     font-weight: 700;
 }
 
-/*.highlight{ background: linear-gradient(90deg, rgba(255,250,230,0.6), rgba(255,250,230,0.2)); }*/
 
 @media (max-width: 720px) {
     .top-three {
@@ -212,7 +209,6 @@
     }
 }
 
-/* Utility: small note rows for additional info in cells (e.g., LC breakdown, CF max) */
 .small-note,
 .cell-note {
     display: block;
@@ -222,7 +218,6 @@
     margin-top: 2px;
 }
 
-/* Optional widths for new columns */
 .leaderboard-table .col-lc {
     width: 120px;
     text-align: right;

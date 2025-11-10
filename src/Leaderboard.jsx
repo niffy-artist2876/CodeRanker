@@ -61,7 +61,6 @@ function Leaderboard() {
         const arr = Array.isArray(data?.leaderboard)
           ? data.leaderboard.slice()
           : [];
-        // Ensure ordering by rank if provided, else score desc
         arr.sort((a, b) => {
           if (typeof a.rank === "number" && typeof b.rank === "number")
             return a.rank - b.rank;
