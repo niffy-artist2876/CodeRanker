@@ -1,0 +1,69 @@
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+out/
+coverage/
+.nyc_output/
+reports/
+*.tgz
+
+# Frontend caches / outputs
+.next/
+.parcel-cache/
+.cache/
+.cache-loader/
+.vite/
+
+# Backend directory (if present)
+/backend/dist/
+/backend/build/
+/backend/node_modules/
+
+# IDEs / editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# OS files
+Thumbs.db
+ehthumbs.db
+
+# Misc
+.pnp.*
+.eslintcache
+.history
+/.turbo/
+.log
+
+# Optional: ignore lockfiles if you don't want to commit them
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+
+# ignore env files anywhere in the repo
+**/.env
+**/.env.*
