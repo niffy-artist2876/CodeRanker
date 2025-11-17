@@ -68,7 +68,7 @@ export default function Home() {
       <footer className="site-footer">
         <div className="container footer-row">
           <div className="tiny">© {new Date().getFullYear()} CodeRanker</div>
-          <a className="tiny link" href="https://example.com" target="_blank" rel="noreferrer">Source</a>
+          <a className="tiny link" href="https://github.com/niffy-artist2876/CodeRanker" target="_blank" rel="noreferrer">Source</a>
         </div>
       </footer>
     </div>
