@@ -1,6 +1,7 @@
 import { Router } from "express";
 import Contest from "../models/Contest.js";
 import { requireAuth, requireAdmin } from "../middleware/auth.js";
+import requireFutureDate from "../middleware/dateCheck.js";
 
 const router = Router();
 
@@ -9,7 +10,7 @@ router.get("/", async (_req, res) => {
   res.json({ success: true, contests });
 });
 
-router.post("/", requireAuth, requireAdmin, async (req, res) => {
+router.post("/", requireAuth, requireAdmin, requireFutureDate("date"), async (req, res) => {
   try {
     const { title, date } = req.body;
     const contest = await Contest.create({ title, date, createdBy: req.userId });
