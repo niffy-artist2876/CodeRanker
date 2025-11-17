@@ -27,7 +27,7 @@ export default function Home() {
             <Link className="btn btn-ghost" to="/login">Login</Link>
           ) : (
             <>
-              <span className="pill">Hello, {user.name?.split(' ')[0] || 'Coder'}</span>
+              <span className="pill"><Link to='/profile/:srn'>Hello, {user.name?.split(' ')[0] || 'Coder'}</Link></span>
               <button className="btn btn-ghost" onClick={() => { logout(); navigate('/'); }} style={{marginLeft: '0.5rem'}}>Logout</button>
             </>
           )}
