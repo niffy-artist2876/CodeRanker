@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import api from '../api.js'
+import NavBar from './NavBar.jsx'
 
 export default function Settings() {
   const { user } = useAuth()
@@ -16,6 +17,7 @@ export default function Settings() {
 
   return (
     <div className="container page">
+      <NavBar></NavBar>
       <div className="card glass">
         <h2>Connect Platforms</h2>
         <p className="hint">Add your Codeforces and LeetCode handles. We’ll fetch ratings and solve counts.</p>

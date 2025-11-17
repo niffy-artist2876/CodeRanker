@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import api from '../api.js'
+import NavBar from './NavBar.jsx'
 
 export default function Contest() {
   const [contests, setContests] = useState([])
   useEffect(()=>{ api.get('/api/contests').then(r=> setContests(r.data.contests || [])) },[])
   return (
     <div className="container page">
+      <NavBar></NavBar>
       <div className="card glass">
         <h2>Contests</h2>
            <ul className="list contests-list">

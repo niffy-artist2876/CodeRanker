@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api.js'
+import NavBar from './NavBar.jsx'
 
 export default function Dashboard() {
   const [top, setTop] = useState([])
@@ -11,7 +12,9 @@ export default function Dashboard() {
   }, [])
 
   return (
+    
     <div className="container">
+      <NavBar></NavBar>
       <div style={{marginBottom: '1rem'}}>
         <button onClick={() => navigate('/progress')}>See My Progress</button>
       </div>

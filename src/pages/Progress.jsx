@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext.jsx'
+import NavBar from './NavBar.jsx'
 
 export default function Progress() {
   const { user } = useAuth()
@@ -17,6 +18,8 @@ export default function Progress() {
 
   return (
     <div className="container progress-page">
+      <NavBar></NavBar>
+
       <div className="card progress-card">
         <h2 className="page-title">Your Progress</h2>
 

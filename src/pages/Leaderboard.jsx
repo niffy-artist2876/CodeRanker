@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../api.js'
+import NavBar from './NavBar.jsx'
 
 export default function Leaderboard() {
   const [users, setUsers] = useState([])
@@ -9,6 +10,7 @@ export default function Leaderboard() {
 
   return (
     <div className="container page">
+      <NavBar></NavBar>
       <div className="heading-row">
         <h2 className="page-title">College Leaderboard</h2>
         <div className="hint">Sorted by Codeforces rating, then LeetCode solves</div>

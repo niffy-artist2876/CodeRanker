@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import api from '../api.js'
+import NavBar from './NavBar.jsx'
 
 export default function Admin() {
   const [title, setTitle] = useState('')
@@ -12,6 +13,7 @@ export default function Admin() {
 
   return (
     <div className="container">
+      <NavBar></NavBar>
       <div className="card">
         <h2>Admin — Create Contest</h2>
         <div className="flex" style={{flexDirection:'column', gap:12}}>
